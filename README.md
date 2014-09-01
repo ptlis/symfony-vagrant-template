@@ -15,9 +15,9 @@ This template consists of the base Symfony2 packages plus a collection of additi
 
 Software & minimum tested versions:
 
-* Vagrant 1.5.
-* Virtualbox 4.3.
-* Ansible 1.5.
+* Vagrant 1.5
+* Virtualbox 4.3
+* Ansible 1.5
 
 
 # Box configuration
@@ -28,4 +28,13 @@ In brief, the following packages are installed:
 
 * MariaDB server & client
 * Apache2
-* php5 (with mysql, curl, intl extensions)
+* php5
+
+
+# Use
+
+* System config changes can be made by editing ```provision/setup/vars/main.yml```.
+* Default IP is 169.254.10.10 - this can be changed by editing the Vagrantfile.
+* Make sure you configure your hosts file to point the configured hostname to the above (or your custom) IP address.
+* Run ```vagrant up```
+* Visit your application's host in a web browser.
