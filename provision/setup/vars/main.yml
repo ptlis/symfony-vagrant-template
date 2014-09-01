@@ -1,0 +1,14 @@
+
+application_name: myapp
+
+vhost:
+  servername: myapp.dev
+  documentroot: /vagrant
+
+php:
+  timezone: Europe/London
+
+db:
+  name:     myapp
+  user:     myapp_user
+  pass:     myapp_pass

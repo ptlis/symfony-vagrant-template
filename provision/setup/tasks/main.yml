@@ -1,0 +1,97 @@
+
+# Dependancy installation
+
+- name: Install system packages
+  sudo: yes
+  yum: name={{ item }} state=latest
+  with_items:
+      # mySQL
+      - mariadb
+      - mariadb-server
+
+      # PHP
+      - php
+      - php-cli
+      - php-curl
+      - php-mysql
+      - php-xdebug
+      - php-intl
+      - php-mbstring
+      - php-pecl-zip
+
+      # Apache2
+      - httpd
+
+      # Node & npm
+      - nodejs
+      - npm
+
+      # Python mySQL module
+      - MySQL-python
+
+      # SCM
+      - git
+      - svn
+
+- name: Install uglifyjs & uglifycss
+  sudo: yes
+  shell: npm install -g less uglify-js uglifycss
+
+- name: Install composer
+  sudo: yes
+  shell: curl -sS https://getcomposer.org/installer | php && mv composer.phar /usr/local/bin/composer
+
+
+# System configuration & service startup
+
+- name: Add Apache config
+  sudo: yes
+  template: src=../config/default.j2 dest=/etc/httpd/conf.d/{{ application_name }}.conf
+
+- name: Remove Apache welcome config
+  sudo: yes
+  file: name=/etc/httpd/conf.d/welcome.conf state=absent
+
+- name: Remove Apache userdir config
+  sudo: yes
+  file: name=/etc/httpd/conf.d/userdir.conf state=absent
+
+- name: Set PHP's timezone
+  sudo: yes
+  lineinfile: dest=/etc/php.ini state=present line='date.timezone = {{ php.timezone }}'
+
+- name: Start Apache
+  sudo: yes
+  service: name=httpd state=running enabled=yes
+
+- name: Start mySQL
+  sudo: yes
+  service: name=mariadb state=running enabled=yes
+
+- name: Create database
+  mysql_db: name={{ db.name }} state=present
+
+- name: Create database user
+  mysql_user: name={{ db.user }} password={{ db.pass }} priv={{ db.name }}.*:ALL state=present
+
+- name: Add Symfony config
+  sudo: yes
+  template: src=../config/parameters.j2 dest=/vagrant/app/config/parameters.yml
+
+
+# Composer setup
+
+- name: Prepare composer directory
+  shell: mkdir -p ~/.composer
+
+- name: Copy composer's github oauth token
+  copy: src=~/.composer/auth.json dest=/home/vagrant/.composer/auth.json
+
+- name: Composer Install
+  shell: cd /vagrant && composer install
+
+
+# Symfony File Permissions
+
+- name: Symfony2 File permissions
+  shell: HTTPDUSER=`ps aux | grep -E '[a]pache|[h]ttpd|[_]www|[w]ww-data|[n]ginx' | grep -v root | head -1 | cut -d\  -f1` && sudo setfacl -R -m u:"$HTTPDUSER":rwX -m u:`whoami`:rwX /dev/shm/{{ application_name }}/cache /dev/shm/{{ application_name }}/logs && sudo setfacl -dR -m u:"$HTTPDUSER":rwX -m u:`whoami`:rwX /dev/shm/{{ application_name }}/cache /dev/shm/{{ application_name }}/logs

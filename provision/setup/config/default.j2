@@ -1,0 +1,18 @@
+
+<VirtualHost *:80>
+  ServerName {{ vhost.servername }}
+  DocumentRoot {{ vhost.documentroot }}/web
+
+  AccessFileName .htaccess_local
+
+  DirectoryIndex index.php
+
+  <Directory "{{ vhost.documentroot }}">
+    AllowOverride All
+    Options Indexes FollowSymLinks
+    Require all granted
+  </Directory>
+</VirtualHost>
+
+
+

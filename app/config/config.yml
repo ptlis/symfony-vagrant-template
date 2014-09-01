@@ -1,0 +1,117 @@
+imports:
+    - { resource: parameters.yml }
+    - { resource: security.yml }
+
+framework:
+    #esi:             ~
+    #translator:      { fallback: "%locale%" }
+    secret:          "%secret%"
+    router:
+        resource: "%kernel.root_dir%/config/routing.yml"
+        strict_requirements: ~
+    form:            ~
+    csrf_protection: ~
+    validation:      { enable_annotations: true }
+    templating:
+        engines: ['twig']
+        #assets_version: SomeVersionScheme
+    default_locale:  "%locale%"
+    trusted_hosts:   ~
+    trusted_proxies: ~
+    session:
+        # handler_id set to null will use default session handler from php.ini
+        handler_id:  ~
+    fragments:       ~
+    http_method_override: true
+    esi: { enabled: true }
+
+# Twig Configuration
+twig:
+    debug:            "%kernel.debug%"
+    strict_variables: "%kernel.debug%"
+
+# Assetic Configuration
+assetic:
+    debug:          "%kernel.debug%"
+    use_controller: false
+    bundles:        [ ]
+    filters:
+        less:
+            node: %nodejs_location%
+            node_paths: %nodejs_paths%
+            apply_to: "\.less$"
+        cssrewrite: ~
+        uglifyjs:
+            bin: %uglifyjs_location%
+        uglifycss:
+            bin: %uglfiycss_location%
+
+
+# Compiled Assets Configuration
+#    assets:
+#        after_page_js:
+#            inputs:
+#                - %kernel.root_dir%/../src/Acme/DemoBundle/Resources/public/js/demo.js
+#            filters:
+#                - ?uglifyjs
+#            output: js/demo.js
+
+# Doctrine Configuration
+doctrine:
+    dbal:
+        driver:   "%database_driver%"
+        host:     "%database_host%"
+        port:     "%database_port%"
+        dbname:   "%database_name%"
+        user:     "%database_user%"
+        password: "%database_password%"
+        charset:  UTF8
+        # if using pdo_sqlite as your database driver, add the path in parameters.yml
+        # e.g. database_path: "%kernel.root_dir%/data/data.db3"
+        # path:     "%database_path%"
+
+    orm:
+        auto_generate_proxy_classes: "%kernel.debug%"
+        auto_mapping: true
+
+# Migrations Configuration
+doctrine_migrations:
+    dir_name: %kernel.root_dir%/../src/Magma/ScrumzDomainBundle/Migrations
+    namespace: Application\Migrations
+    table_name: migration_versions
+    name: Application Migrations
+
+
+# Swiftmailer Configuration
+swiftmailer:
+    transport: 	"%mailer_transport%"
+    encryption: "%mailer_encryption%"
+    auth_mode:  "%mailer_auth_mode%"
+    host:       "%mailer_host%"
+    username:   "%mailer_user%"
+    password:   "%mailer_password%"
+
+# JMS Serializer Configuration
+jms_serializer:
+#    metadata:
+#        auto_detection: true
+#        directories:
+#            Scrumz:
+#                namespace_prefix: "Magma\ScrumzDomainBundle\Entity"
+#                path: "%kernel.root_dir%/../src/Magma/ScrumzDomainBundle/Entity/Serialization/Metadata"
+
+# BrancraftedBootstrap Configuration
+braincrafted_bootstrap:
+    output_dir: lib/bootstrap
+    assets_dir: %kernel.root_dir%/../vendor/twbs/bootstrap
+    less_filter: less
+    auto_configure:
+        assetic: false
+        twig: true
+        knp_menu: false
+        knp_paginator: false
+    customize:
+#        variables_file: %kernel.root_dir%/../src/Acme/DemoBundle/Resources/less/bootstrap_variables.less
+        bootstrap_output: %kernel.root_dir%/Resources/less/bootstrap.less
+        bootstrap_template: BraincraftedBootstrapBundle:Bootstrap:bootstrap.less.twig
+
