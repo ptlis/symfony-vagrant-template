@@ -13,9 +13,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     config.vm.network :private_network, ip: "169.254.10.10"
     config.vm.network "forwarded_port", guest: 8080, host: 8080
 
-    # Use rsync for syncing - avoids using slow NFS share
-    config.vm.synced_folder ".", "/vagrant", type: "rsync", rsync__args: ["--max-delete=0"], rsync__exclude: ["bin/"]
-
     # Provision with ansible
     config.vm.provision "ansible" do |ansible|
         ansible.playbook = "provision/vagrant.yml"
