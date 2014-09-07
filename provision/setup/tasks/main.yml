@@ -77,6 +77,9 @@
 - name: Add Symfony config
   sudo: yes
   template: src=../config/parameters.j2 dest=/vagrant/app/config/parameters.yml
+  
+- name: Set symfony config file permissions
+  shell: chmod 644 /vagrant/app/config/parameters.yml
 
 
 # Composer setup
