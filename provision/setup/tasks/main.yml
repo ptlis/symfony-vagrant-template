@@ -42,6 +42,33 @@
   shell: curl -sS https://getcomposer.org/installer | php && mv composer.phar /usr/local/bin/composer
 
 
+# Xdebug configuration
+
+- lineinfile: dest=/etc/php.d/xdebug.ini regexp="xdebug.remote_enable" line="xdebug.remote_enable=1"
+  sudo: yes
+
+- lineinfile: dest=/etc/php.d/xdebug.ini regexp="xdebug.remote_handler" line="xdebug.remote_handler=dbgp"
+  sudo: yes
+
+- lineinfile: dest=/etc/php.d/xdebug.ini regexp="xdebug.remote_mode" line="xdebug.remote_mode=req"
+  sudo: yes
+
+- lineinfile: dest=/etc/php.d/xdebug.ini regexp="xdebug.remote_connect_back" line="xdebug.remote_connect_back=1"
+  sudo: yes
+
+- lineinfile: dest=/etc/php.d/xdebug.ini regexp="xdebug.remote_port" line="xdebug.remote_port=9000"
+  sudo: yes
+
+- lineinfile: dest=/etc/php.d/xdebug.ini regexp="xdebug.profiler_enable" line="xdebug.profiler_enable=1"
+  sudo: yes
+
+- lineinfile: dest=/etc/php.d/xdebug.ini regexp="xdebug.profiler_enable_trigger" line="xdebug.profiler_enable_trigger=1"
+  sudo: yes
+
+- lineinfile: dest=/etc/php.d/xdebug.ini regexp="xdebug.profiler_output_dir" line="xdebug.profiler_output_dir=/tmp"
+  sudo: yes
+
+
 # System configuration & service startup
 
 - name: Add Apache config
@@ -74,10 +101,13 @@
 - name: Create database user
   mysql_user: name={{ db.user }} password={{ db.pass }} priv={{ db.name }}.*:ALL state=present
 
+
+# Symfony Configuration
+
 - name: Add Symfony config
   sudo: yes
   template: src=../config/parameters.j2 dest=/vagrant/app/config/parameters.yml
-  
+
 - name: Set symfony config file permissions
   shell: chmod 644 /vagrant/app/config/parameters.yml
 
